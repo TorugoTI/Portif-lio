@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Página de Produtos - Suplementos</title>
+        <!-- Link do Bootstrap -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Estilos Personalizados -->
+        <style>
+            body {
+                padding-top: 60px;
+                height: 100vh;
+            }
+
+            /* Cabeçalho fixo */
+            .navbar {
+                position: fixed;
+                top: 0;
+                width: 100%;
+                z-index: 1000;
+            }
+
+            /* Formulário de Captura de Leads */
+            .lead-capture-form {
+                background-color: #f8f9fa;
+                padding: 40px 0;
+                text-align: center;
+            }
+
+            /* Container para centralizar o formulário */
+            .centralize-form {
+                height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            /* Configuração dos campos de entrada e o botão */
+            .lead-capture-form .form-control {
+                height: 50px;
+                font-size: 1rem;
+                max-width: 400px;
+                margin-bottom: 15px;
+                margin-left: auto;
+                margin-right: auto;
+                display: block;
+            }
+
+            .lead-capture-form button {
+                font-size: 1rem;
+                padding: 10px 30px;
+                width: 100%;
+                max-width: 400px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            /* Esconde a página de produto até o cadastro */
+            .product-page {
+                display: none;
+            }
+
+            /* Exibe a página de produto após o cadastro */
+            .product-page.active {
+                display: block;
+            }
+
+            /* Modal para visualização do produto */
+            .modal-content img {
+                    width: 100%;
+                    height: 400px;
+                    object-fit: cover;
+                }
+
+                /* Timer de contagem regressiva */
+                .timer {
+                    font-size: 2rem;
+                    font-weight: bold;
+                }
+
+                /* Rodapé */
+                footer {
+                    background-color: #333;
+                    color: white;
+                    padding: 20px 0;
+                }
+
+                footer a {
+                    color: white;
+                    text-decoration: none;
+                }
+
+                footer a:hover {
+                    text-decoration: underline;
+                }
+
+                /* Slider de Depoimentos */
+                .testimonial-slider {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    overflow-x: auto;
+                    gap: 20px;
+                    padding: 20px;
+                    scroll-behavior: smooth;
+                }
+
+                .testimonial-card {
+                    background-color: #f8f9fa;
+                    padding: 15px;
+                    border-radius: 8px;
+                    width: 300px;
+                    text-align: center;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                    transition: transform 0.3s ease;
+                }
+
+                .testimonial-card:hover {
+                    transform: scale(1.05);
+                }
+
+                /* Adiciona o efeito de cursor de arraste */
+                .testimonial-slider::-webkit-scrollbar {
+                    display: none;
+                }
+
+                /* Rodapé */
+                footer {
+                    background-color: #333;
+                    color: white;
+                    padding: 20px 0;
+                }
+
+                footer a {
+                    color: white;
+                    text-decoration: none;
+                }
+
+                footer a:hover {
+                    text-decoration: underline;
+                }
+
+            /* Estilos para Navbar */
+            .navbar-nav {
+                display: flex;
+                justify-content: flex-end;
+                width: 100%;
+            }
+
+            /* Estilo para a mensagem de boas-vindas */
+            .welcome-message {
+                display: none;
+                background-color: #f0f0f0;
+                text-align: center;
+                font-size: 1.5rem;
+                padding: 10px;
+                color: #333;
+            }
+
+            /* Centraliza o carrossel de imagens */
+            .carousel {
+                width: 75%;
+                margin: 0 auto;
+            }
+
+            /* Centraliza os indicadores do carrossel */
+            .carousel-indicators {
+                justify-content: center;
+            }
+
+            /* Estilo para os indicadores (botões de navegação do carrossel) */
+            .carousel-indicators button {
+                background-color: black !important; 
+            }
+
+            .carousel-indicators .active {
+                background-color: #f0f0f0 !important; 
+            }
+
+        </style>
+
+        <!-- Máscara de input para telefone -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.7-beta.17/inputmask.min.js"></script>
+    </head>
+
+    <body>
+
+        <!-- Formulário de Captura de Leads em um Container Centralizado -->
+        <div class="container centralize-form" id="leadForm">
+            <div class="lead-capture-form">
+                <h2>Fique por dentro das nossas ofertas!</h2>
+                <p>  </p>
+                <form id="formLead" onsubmit="return handleSubmit(event)">
+                    <div class="input-group mb-3">
+                        <input type="text" id="name" class="form-control" placeholder="Digite seu nome" aria-label="Nome" required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="email" id="email" class="form-control" placeholder="Digite seu e-mail" aria-label="E-mail" required>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" id="phone" class="form-control" placeholder="Digite seu telefone" aria-label="Telefone" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Assinar</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Cabeçalho Fixo -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" id="navbar">
+            <a class="navbar-brand" href="#">H&W Publishing</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Produtos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Sobre</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contato</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Página de Produto -->
+        <div class="product-page" id="productPage">
+
+            <!-- Mensagem de Boas-Vindas -->
+            <div id="welcomeMessage" class="welcome-message"></div>
+
+            <!-- Banner com Carrossel de Imagens -->
+            <div class="banner">
+                <div id="carouselExampleIndicators" class="carousel slide w-75" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
+                            aria-current="true" aria-label="Slide 1"></button>
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
+                            aria-label="Slide 2"></button>
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
+                            aria-label="Slide 3"></button>
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3"
+                            aria-label="Slide 4"></button>
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4"
+                            aria-label="Slide 5"></button>
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="5"
+                            aria-label="Slide 6"></button>
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="6"
+                            aria-label="Slide 7"></button>
+                    </div>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="https://www.drogariaminasbrasil.com.br/media/catalog/product/cache/5/small_image/220x/9df78eab33525d08d6e5fb8d27136e95/medicamentos/drogariaminasbrasil_tarja_vermelha.jpg" class="d-block w-100" alt="Vitamina">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="https://emporiopires.com.br/wp-content/uploads/2022/03/mela.jpg" class="d-block w-100" alt="Melatonina">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="https://app.tagplus.com.br/bfd3d0o3/files/images/produtos/214/13e81c18185f856c73c10ad5ac36381d.jpeg" class="d-block w-100" alt="Albumina">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQGSJs9IavbBDqedHoyGRU4HYFxKEmQT0Qy9e5B-pqHhYZSAfWDFo-GKT9DJqzeR5I7SKa7JezunswuhzI79oOQ12Y7WXPpx8HPdZj5S-JmGZqZjJSpshiH-w&usqp=CAE" class="d-block w-100" alt="Whey Protein">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="https://cdn.awsli.com.br/300x300/2121/2121847/produto/132821668/f93c1fce77.jpg" class="d-block w-100" alt="Creatina">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="https://cdn.awsli.com.br/300x300/97/97748/produto/272369671/mascara-bcaa-com-queratina-hidrolisada-250g-kostume-52000b48-mtyclbp31f.jpg" class="d-block w-100" alt="BCAA">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTR10T680I-1BZtlhWmpvTqZBCYM9_k5MEi1Q&s" class="d-block w-100" alt="Colágeno">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Container de Produtos -->
+            <div class="container mt-4">
+                <div class="row">
+                    <!-- Produto 1 - Albumina -->
+                    <div class="col-md-3">
+                        <div class="card">
+                            <img id="ProductImage1" src="https://app.tagplus.com.br/bfd3d0o3/files/images/produtos/214/13e81c18185f856c73c10ad5ac36381d.jpeg" class="card-img-top" alt="Albumina">
+                            <div class="card-body">
+                                <h5 class="card-title">Albumina</h5>
+                                <p class="card-text">Suplemento de proteína de alta qualidade para ganho de massa muscular.</p>
+                                <p class="card-text"><strong>R$119,90</strong></p> <!-- Preço adicionado -->
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#productModal" onclick="openModal(1)">Ver Detalhes</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Produto 2 - Vitamina -->
+                    <div class="col-md-3">
+                        <div class="card">
+                            <img id="ProductImage2" src="https://www.drogariaminasbrasil.com.br/media/catalog/product/cache/5/small_image/220x/9df78eab33525d08d6e5fb8d27136e95/medicamentos/drogariaminasbrasil_tarja_vermelha.jpg" class="card-img-top" alt="Vitamina">
+                            <div class="card-body">
+                                <h5 class="card-title">Vitamina</h5>
+                                <p class="card-text">Suplemento vitamínico para melhorar o sistema imunológico.</p>
+                                <p class="card-text"><strong>R$19,90</strong></p> <!-- Preço adicionado -->
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#productModal" onclick="openModal(2)">Ver Detalhes</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Produto 3 - BCAA -->
+                    <div class="col-md-3">
+                        <div class="card">
+                            <img id="ProductImage3" src="https://cdn.awsli.com.br/300x300/2121/2121847/produto/132821668/f93c1fce77.jpg" class="card-img-top" alt="BCAA">
+                            <div class="card-body">
+                                <h5 class="card-title">BCAA</h5>
+                                <p class="card-text">Aminoácidos essenciais para recuperação muscular.</p>
+                                <p class="card-text"><strong>R$89,90</strong></p> <!-- Preço adicionado -->
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#productModal" onclick="openModal(3)">Ver Detalhes</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Produto 4 - Whey Protein -->
+                    <div class="col-md-3">
+                        <div class="card">
+                            <img id="ProductImage4" src="https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQGSJs9IavbBDqedHoyGRU4HYFxKEmQT0Qy9e5B-pqHhYZSAfWDFo-GKT9DJqzeR5I7SKa7JezunswuhzI79oOQ12Y7WXPpx8HPdZj5S-JmGZqZjJSpshiH-w&usqp=CAE" class="card-img-top" alt="Whey Protein">
+                            <div class="card-body">
+                                <h5 class="card-title">Whey Protein</h5>
+                                <p class="card-text">Proteína de rápida absorção para recuperação pós-treino.</p>
+                                <p class="card-text"><strong>R$189,90</strong></p> <!-- Preço adicionado -->
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#productModal" onclick="openModal(4)">Ver Detalhes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal de Detalhes do Produto -->
+            <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="productModalLabel"></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <img id="modalProductImage" src="" class="img-fluid" alt="Imagem do Produto">
+                            <h5 id="modalProductName"></h5>
+                            <p id="modalProductDescription"></p>
+                            <p id="modalProductPrice"></p> <!-- Preço no modal -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timer para Promoção -->
+            <div class="container mt-5 text-center">
+                <h2>Oferta Especial</h2>
+                <div id="countdown" class="timer"></div>
+                <button class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#creatineModal">Comprar Agora</button>
+            </div>
+
+            <!-- Modal de Detalhes do Produto - Oferta Especial -->
+        <div class="modal fade" id="creatineModal" tabindex="-1" aria-labelledby="creatineModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="creatineModalLabel">Creatina</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <img src="https://cdn.awsli.com.br/300x300/2121/2121847/produto/132821668/f93c1fce77.jpg" class="img-fluid" alt="Creatina">
+                        <h5>Creatina - R$79,90</h5>
+                        <p>É uma substância produzida naturalmente pelo organismo através de três aminoácidos: glicina, metionina e arginina.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <!-- Depoimentos -->
+            <div class="testimonial-slider">
+                <div class="testimonial-card">
+                    <p>"Melhor suplemento que já usei! Realmente ajudou no meu ganho de massa." - João</p>
+                </div>
+                <div class="testimonial-card">
+                    <p>"Produto incrível, efeito rápido e sabor ótimo!" - Maria</p>
+                </div>
+            </div>
+
+            <!-- Rodapé -->
+            <footer>
+                <div class="container text-center">
+                    <p>&copy; 2024 Suplementos. Todos os direitos reservados.</p>
+                    <a href="#">Política de Privacidade</a> | <a href="#">Contato</a>
+                </div>
+            </footer>
+        </div>
+
+        <!-- Scripts Bootstrap -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Script para Cabeçalho fixo com mudança de cor -->
+        <script>
+            window.addEventListener('scroll', function () {
+                const navbar = document.getElementById('navbar');
+                if (window.scrollY > 50) {
+                    navbar.classList.add('navbar-scrolled');
+                } else {
+                    navbar.classList.remove('navbar-scrolled');
+                }
+            });
+
+            // Atualiza o contador a cada segundo
+            setInterval(updateCountdown, 1000);
+
+            // Adiciona funcionalidade de navegação manual no slider de depoimentos
+            const testimonialSlider = document.getElementById('testimonialSlider');
+            let isMouseDown = false;
+            let startX, scrollLeft;
+
+            testimonialSlider.addEventListener('mousedown', (e) => {
+                isMouseDown = true;
+                startX = e.pageX - testimonialSlider.offsetLeft;
+                scrollLeft = testimonialSlider.scrollLeft;
+            });
+
+            testimonialSlider.addEventListener('mouseleave', () => {
+                isMouseDown = false;
+            });
+
+            testimonialSlider.addEventListener('mouseup', () => {
+                isMouseDown = false;
+            });
+
+            testimonialSlider.addEventListener('mousemove', (e) => {
+                if (!isMouseDown) return;
+                const x = e.pageX - testimonialSlider.offsetLeft;
+                const walk = (x - startX) * 3; 
+                testimonialSlider.scrollLeft = scrollLeft - walk;
+            });
+
+            // Habilita o scroll com toque
+            testimonialSlider.addEventListener('touchstart', (e) => {
+                isMouseDown = true;
+                startX = e.touches[0].pageX - testimonialSlider.offsetLeft;
+                scrollLeft = testimonialSlider.scrollLeft;
+            });
+
+            testimonialSlider.addEventListener('touchend', () => {
+                isMouseDown = false;
+            });
+
+            testimonialSlider.addEventListener('touchmove', (e) => {
+                if (!isMouseDown) return;
+                const x = e.touches[0].pageX - testimonialSlider.offsetLeft;
+                const walk = (x - startX) * 3;
+                testimonialSlider.scrollLeft = scrollLeft - walk;
+            });
+        </script>
+
+        <!-- Script para Exibir Página de Produto e Nome do Usuário -->
+        <script>
+            function handleSubmit(event) {
+                event.preventDefault(); // Impede o envio do formulário
+                const name = document.getElementById('name').value;
+
+                // Exibe a página de produto e esconde o formulário
+                document.getElementById('leadForm').style.display = 'none';
+                const productPage = document.getElementById('productPage');
+                productPage.classList.add('active');
+
+                // Exibe a mensagem "Bem-vindo, [Nome]" acima do carrossel
+                const welcomeMessage = document.getElementById('welcomeMessage');
+                welcomeMessage.innerHTML = `Bem-vindo, ${name}!`;
+                welcomeMessage.style.display = 'block';
+
+                // Oculta a mensagem após 10 segundos
+                setTimeout(function () {
+                    welcomeMessage.style.display = 'none';
+                }, 10000);
+            }
+
+            // Máscara para o campo telefone
+            const phoneInput = document.getElementById('phone');
+            const phoneMask = new Inputmask('(99) 99999-9999');
+            phoneMask.mask(phoneInput);
+        </script>
+        <!-- Script para Contagem Regressiva -->
+        <script>
+            const countdownDate = new Date().getTime() + 86400000; // 24 horas
+            const countdownElement = document.getElementById('countdown');
+
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = countdownDate - now;
+
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                countdownElement.innerHTML = `${hours}h ${minutes}m ${seconds}s`;
+
+                if (distance < 0) {
+                    countdownElement.innerHTML = "Oferta Expirada";
+                }
+            }
+
+            setInterval(updateCountdown, 1000);
+        </script>
+
+        <!-- Função para abrir o modal com as informações do produto -->
+        <script>
+        function openModal(productId) {
+            const productData = {
+                1: {
+                    name: "Albumina",
+                    description: "Suplemento de proteína de alta qualidade para ganho de massa muscular.",
+                    image: "https://app.tagplus.com.br/bfd3d0o3/files/images/produtos/214/13e81c18185f856c73c10ad5ac36381d.jpeg",
+                    price: "R$119,90"
+                },
+                2: {
+                    name: "Vitamina",
+                    description: "Suplemento vitamínico para melhorar o sistema imunológico.",
+                    image: "https://www.drogariaminasbrasil.com.br/media/catalog/product/cache/5/small_image/220x/9df78eab33525d08d6e5fb8d27136e95/medicamentos/drogariaminasbrasil_tarja_vermelha.jpg",
+                    price: "R$19,90"
+                },
+                3: {
+                    name: "BCAA",
+                    description: "Aminoácidos essenciais para recuperação muscular.",
+                    image: "https://cdn.awsli.com.br/300x300/2121/2121847/produto/132821668/f93c1fce77.jpg",
+                    price: "R$89,90"
+                },
+                4: {
+                    name: "Whey Protein",
+                    description: "Proteína de rápida absorção para recuperação pós-treino.",
+                    image: "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQGSJs9IavbBDqedHoyGRU4HYFxKEmQT0Qy9e5B-pqHhYZSAfWDFo-GKT9DJqzeR5I7SKa7JezunswuhzI79oOQ12Y7WXPpx8HPdZj5S-JmGZqZjJSpshiH-w&usqp=CAE",
+                    price: "R$189,90"
+                }
+            };
+
+            const product = productData[productId];
+            document.getElementById('productModalLabel').textContent = product.name;
+            document.getElementById('modalProductImage').src = product.image;
+            document.getElementById('modalProductName').textContent = product.name;
+            document.getElementById('modalProductDescription').textContent = product.description;
+            document.getElementById('modalProductPrice').textContent = "Preço: " + product.price;
+        }
+        </script>
+
+
+    </body>
+
+</html>
