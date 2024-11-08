@@ -489,29 +489,6 @@
             });
         </script>
 
-         <!-- Script para Contagem Regressiva -->
-        <script>
-            const countdownDate = new Date().getTime() + 86400000; // 24 horas
-            const countdownElement = document.getElementById('countdown');
-
-            function updateCountdown() {
-                const now = new Date().getTime();
-                const distance = countdownDate - now;
-
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                countdownElement.innerHTML = `${hours}h ${minutes}m ${seconds}s`;
-
-                if (distance < 0) {
-                    countdownElement.innerHTML = "Oferta Expirada";
-                }
-            }
-
-            setInterval(updateCountdown, 1000);
-        </script>
-
         <!-- Função para abrir o modal com as informações do produto -->
         <script>
         function openModal(productId) {
