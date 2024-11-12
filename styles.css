@@ -1,48 +1,40 @@
-/* Cores */
-.bg-black {
-    background-color: #000000;
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #ffffff;
 }
 
-.text-orange {
-    color: #FFA500;
+.container {
+    text-align: center;
+    padding: 20px;
 }
 
-.text-red {
-    color: #FF4500;
-}
-
-.profile-img {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    border: 2px solid #FF4500;
-}
-
-h1 {
+.username {
+    color: #f47c3c; /* Laranja para destacar o nome do usuário */
     font-size: 1.8em;
-    color: #FFA500;
-    font-weight: bold;
+    margin-bottom: 20px;
 }
 
-/* Botões de Link */
-.link-button {
-    display: block;
-    margin: 10px auto;
-    padding: 12px 20px;
-    background-color: #FFA500;
-    color: #FFFFFF;
-    font-weight: bold;
+.links {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.link {
     text-decoration: none;
-    border: 2px solid #FF4500;
-    border-radius: 50px;
-    width: 80%;
-    transition: all 0.3s ease-in-out;
+    color: #ffffff;
+    background-color: #333333;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: background-color 0.3s;
 }
 
-/* Efeito Hover no botão */
-.link-button:hover {
-    background-color: #FF4500;
-    color: #FFFFFF;
-    transform: scale(1.05);
-    box-shadow: 0px 4px 8px rgba(255, 69, 0, 0.3);
+.link:hover {
+    background-color: #f47c3c; /* Efeito hover com laranja */
 }
